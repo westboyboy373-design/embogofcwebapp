@@ -9,7 +9,7 @@ RUN npm run build
 # Step 2: Set up the PHP environment
 FROM php:8.3-apache
 
-# Install system dependencies & PHP extensions needed for Laravel
+# Install system dependencies & PHP extensions needed for Laravel MySQL
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -17,9 +17,8 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_pgsql
+    && docker-php-ext-install gd pdo pdo_mysql
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
