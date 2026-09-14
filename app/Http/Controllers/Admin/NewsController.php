@@ -43,7 +43,7 @@ class NewsController extends Controller
             $filePath = 'uploads/news/' . $filename;
 
             DB::table('post_media')->insert([
-                'post_id' => $postId, // Ensure your post_media foreign key matches news_posts.id
+                'post_id' => $postId, 
                 'file_path' => $filePath,
                 'file_type' => 'image',
                 'created_at' => now(),
@@ -55,7 +55,6 @@ class NewsController extends Controller
 
     public function destroy($id)
     {
-        // Optional: Delete associated media files from storage when deleting post
         $mediaFiles = DB::table('post_media')->where('post_id', $id)->get();
         foreach ($mediaFiles as $media) {
             $fullPath = public_path($media->file_path);
@@ -66,7 +65,7 @@ class NewsController extends Controller
 
         DB::table('post_media')->where('post_id', $id)->delete();
         DB::table('news_posts')->where('id', $id)->delete();
-
+        
         return redirect()->back()->with('success', 'Article removed successfully.');
     }
 }

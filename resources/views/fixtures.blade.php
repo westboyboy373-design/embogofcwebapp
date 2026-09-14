@@ -4,18 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Embogo FC Kabale - Match Fixtures & Results</title>
+
+     @include('layouts.header')
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+
+    
 </head>
+
+
 <body class="bg-slate-900 text-slate-100 min-h-screen antialiased">
 
     <div style="background-color: #ffffff; color: #111827; font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; padding: 2.5rem 1rem;">
 
         <main style="max-width: 72rem; margin: 0 auto; display: flex; flex-direction: column; gap: 3rem;">
+
+
 
             <!-- Hero Banner Section -->
             <section style="background: linear-gradient(135deg, #3b0764 0%, #581c87 50%, #1e1b4b 100%); border-radius: 2rem; padding: 3.5rem 2rem; border: 1px solid rgba(251, 191, 36, 0.3); box-shadow: 0 20px 40px rgba(88,28,135,0.15); text-align: center; position: relative; overflow: hidden;">
@@ -45,7 +53,10 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                     
                     @php
-                        $upcomingFixtures = DB::table('fixture_photos')->where('type', 'upcoming')->orderBy('id', 'desc')->get();
+                        $upcomingFixtures = [];
+                        if (\Illuminate\Support\Facades\Schema::hasTable('fixture_photos')) {
+                            $upcomingFixtures = DB::table('fixture_photos')->where('type', 'upcoming')->orderBy('id', 'desc')->get();
+                        }
                     @endphp
 
                     @forelse($upcomingFixtures as $upcoming)
@@ -110,7 +121,10 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
                     
                     @php
-                        $recentResults = DB::table('fixture_photos')->where('type', 'result')->orderBy('id', 'desc')->get();
+                        $recentResults = [];
+                        if (\Illuminate\Support\Facades\Schema::hasTable('fixture_photos')) {
+                            $recentResults = DB::table('fixture_photos')->where('type', 'result')->orderBy('id', 'desc')->get();
+                        }
                     @endphp
 
                     @forelse($recentResults as $result)
@@ -170,6 +184,8 @@
         </main>
 
     </div>
+
+     @include('layouts.footer')
 
 </body>
 </html>

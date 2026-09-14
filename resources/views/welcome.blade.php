@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Embogo FC | Official Football Club Portal</title>
-    <!-- Tailwind CSS CDN -->
+
+    <title>{{ config('app.name', 'Embogo FC') }}</title>
+
+    <meta
+        name="description"
+        content="Official Embogo FC website — fixtures, news, league standings, club updates and merchandise."
+    >
+
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             theme: {
@@ -17,443 +29,1380 @@
                             dark: '#3b0764',
                             light: '#7e22ce',
                         },
+
                         clubBlue: {
                             DEFAULT: '#2563eb',
                             dark: '#1e40af',
                             light: '#3b82f6',
                         },
+
                         clubGold: {
                             DEFAULT: '#b45309',
                             light: '#f59e0b',
-                        }
+                        },
+                    },
+
+                    boxShadow: {
+                        'club': '0 20px 50px rgba(59, 7, 100, 0.15)',
+                        'club-lg': '0 25px 70px rgba(59, 7, 100, 0.20)',
                     }
                 }
             }
         }
     </script>
+
     <style>
-        /* Custom SVG Wavy Pattern Background for Footer */
-        .footer-wave-bg {
-            background-color: #3b0764;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23581c87' fill-opacity='1' d='M0,192L48,181.3C96,171,192,149,288,160C384,171,480,213,576,213.3C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E"),
-                              url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%234c0559' fill-opacity='0.6' d='M0,96L48,112C96,128,192,160,288,165.3C384,171,480,149,576,133.3C672,117,768,107,864,122.7C960,139,1056,181,1152,186.7C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center bottom;
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .hero-gradient {
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(59, 7, 100, 0.96) 0%,
+                    rgba(88, 28, 135, 0.84) 45%,
+                    rgba(37, 99, 235, 0.40) 100%
+                );
+        }
+
+        .section-kicker {
+            letter-spacing: .18em;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, .10);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, .15);
+        }
+
+        .news-card,
+        .quick-card,
+        .match-card,
+        .value-card {
+            transition:
+                transform .25s ease,
+                box-shadow .25s ease,
+                border-color .25s ease;
+        }
+
+        .news-card:hover,
+        .quick-card:hover,
+        .match-card:hover,
+        .value-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .hero-slide {
+            display: none;
+        }
+
+        .hero-slide.active {
+            display: block;
+        }
+
+        .carousel-dot.active {
+            width: 34px;
+        }
+
+        .carousel-dot {
+            transition: all .25s ease;
+        }
+
+        .image-overlay {
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(15, 23, 42, .92),
+                    rgba(15, 23, 42, .35),
+                    transparent
+                );
+        }
+
+        .gold-line {
+            background: linear-gradient(
+                90deg,
+                #f59e0b,
+                #b45309,
+                transparent
+            );
+        }
+
+        .purple-line {
+            background: linear-gradient(
+                90deg,
+                #7e22ce,
+                #581c87,
+                transparent
+            );
+        }
+
+        .focus-ring:focus-visible {
+            outline: 3px solid #f59e0b;
+            outline-offset: 3px;
+        }
+
+        /* Lucide icon defaults */
+        [data-lucide] {
+            width: 19px;
+            height: 19px;
+            stroke-width: 1.8;
+            flex-shrink: 0;
+        }
+
+        .icon-box [data-lucide] {
+            width: 21px;
+            height: 21px;
+            stroke-width: 1.8;
+        }
+
+        .icon-small [data-lucide] {
+            width: 16px;
+            height: 16px;
+            stroke-width: 1.9;
+        }
+
+        .icon-large [data-lucide] {
+            width: 25px;
+            height: 25px;
+            stroke-width: 1.7;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+            }
         }
     </style>
 </head>
-<body class="bg-white text-gray-900 font-sans">
 
-@include('layouts.header')
+<body class="bg-slate-50 text-slate-900">
 
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobileMenu" class="hidden md:hidden bg-gray-950 border-t border-purple-900/50 px-4 py-4 space-y-3">
-            <a href="#news" class="block text-sm text-white font-medium">News</a>
-            <a href="#matches" class="block text-sm text-white font-medium">Fixtures &amp; Results</a>
-            <a href="#standings" class="block text-sm text-white font-medium">League Table</a>
-            <a href="#kits" class="block text-sm text-white font-medium">Kits</a>
-            <a href="#club" class="block text-sm text-white font-medium">Club</a>
-            <a href="#contact" class="block text-sm text-amber-400 font-medium">Contact</a>
-        </div>
-    </header>
+    @include('layouts.header')
 
-    <!-- === MAIN CONTAINER === -->
-    <main class="max-w-7xl mx-auto px-4 pt-6 space-y-12 pb-16">
-        
-        <!-- HERO CAROUSEL BANNER -->
-        <section class="bg-gradient-to-tr from-clubPurple-dark via-clubPurple to-clubBlue rounded-3xl overflow-hidden shadow-xl relative border border-purple-500/20">
-            <!-- Carousel Container -->
-            <div id="heroCarousel" class="relative overflow-hidden">
-                
-                <!-- Slide 1 -->
-                <div class="carousel-slide duration-700 ease-in-out px-6 md:px-12 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                    <div class="md:col-span-7 space-y-4 py-8 z-10">
-                        <span class="text-xs font-black tracking-widest uppercase text-gray-950 bg-amber-400 px-3.5 py-1 rounded-full shadow-md">
-                            <i class="fa-solid fa-bolt mr-1"></i> Latest News
-                        </span>
-                        <h1 class="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-                            Ronald Mugisha: Embogo FC Sign Promising Midfielder to Long-Term Deal
+
+    <!-- =========================================================
+         HERO SECTION
+    ========================================================== -->
+
+    <main>
+
+        <section
+            id="home"
+            class="relative min-h-[680px] overflow-hidden bg-clubPurple-dark"
+            aria-label="Embogo FC highlights"
+        >
+
+            <!-- Slide 1 -->
+            <div
+                class="hero-slide active relative min-h-[680px]"
+                data-slide="0"
+            >
+
+                <img
+                    src="{{ asset('images/bb.jpeg') }}"
+                    alt="Embogo FC football action"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                >
+
+                <div class="hero-gradient absolute inset-0"></div>
+
+                <div class="absolute inset-0 bg-black/20"></div>
+
+                <div class="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-5 py-20 sm:px-8 lg:px-10">
+
+                    <div class="max-w-3xl text-white">
+
+                        <div class="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-md">
+
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-clubGold-light text-clubPurple-dark shadow-sm">
+                                <i data-lucide="zap" class="icon-small" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="uppercase tracking-[.16em]">
+                                Welcome to Embogo FC
+                            </span>
+
+                        </div>
+
+                        <h1 class="text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-8xl">
+                            More Than
+                            <span class="block text-clubGold-light">
+                                Football.
+                            </span>
                         </h1>
-                        <p class="text-purple-100 text-sm md:text-base max-w-xl font-medium">
-                            The Buffaloes continue strengthening their squad ahead of the crucial second leg of the Uganda Premier League campaign.
+
+                        <p class="mt-7 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
+                            Follow Embogo FC for the latest club news, match updates,
+                            league standings, team moments and everything happening
+                            around the club.
                         </p>
-                    </div>
-                    <div class="md:col-span-5 flex justify-end items-end h-full relative">
-                        <div class="w-full h-80 md:h-96 rounded-2xl bg-gradient-to-t from-clubPurple-dark/80 to-transparent flex items-end justify-center overflow-hidden border border-amber-400/20">
-                            <img src="{{ asset('images/bb.jpeg') }}" alt="Player" class="w-full h-full object-cover object-top opacity-90" referrerpolicy="no-referrer">
-                            <div class="absolute bottom-6 right-6 bg-gray-950/80 backdrop-blur-md px-4 py-2 rounded-xl border border-amber-400 text-amber-400 text-xs font-bold flex items-center gap-2 shadow-lg">
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> #08 Owen mugume
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Slide 2 -->
-                <div class="carousel-slide hidden duration-700 ease-in-out px-6 md:px-12 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                    <div class="md:col-span-7 space-y-4 py-8 z-10">
-                        <span class="text-xs font-black tracking-widest uppercase text-gray-950 bg-amber-400 px-3.5 py-1 rounded-full shadow-md">
-                            <i class="fa-solid fa-trophy mr-1"></i> Matchday Preview
-                        </span>
-                        <h1 class="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-                            Embogo FC Ready to Battle KCCA FC at Namboole Stadium
-                        </h1>
-                        <p class="text-purple-100 text-sm md:text-base max-w-xl font-medium">
-                            Fans are geared up in numbers as The Buffaloes seek an important victory on home turf this coming Tuesday afternoon.
-                        </p>
-                    </div>
-                    <div class="md:col-span-5 flex justify-end items-end h-full relative">
-                        <div class="w-full h-80 md:h-96 rounded-2xl bg-gradient-to-t from-clubPurple-dark/80 to-transparent flex items-end justify-center overflow-hidden border border-amber-400/20">
-                      <img src="{{ asset('images/wo.jpeg') }}" alt="New Kits" class="w-full h-full object-cover object-top opacity-90" referrerpolicy="no-referrer">
-                            <div class="absolute bottom-6 right-6 bg-gray-950/80 backdrop-blur-md px-4 py-2 rounded-xl border border-amber-400 text-amber-400 text-xs font-bold flex items-center gap-2 shadow-lg">
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> observation
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <div class="mt-9 flex flex-col gap-4 sm:flex-row">
 
-                <!-- Slide 3 -->
-                <div class="carousel-slide hidden duration-700 ease-in-out px-6 md:px-12 py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                    <div class="md:col-span-7 space-y-4 py-8 z-10">
-                        <span class="text-xs font-black tracking-widest uppercase text-gray-950 bg-amber-400 px-3.5 py-1 rounded-full shadow-md">
-                            <i class="fa-solid fa-shirt mr-1"></i> Club Merchandise
-                        </span>
-                        <h1 class="text-2xl md:text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-                            Get the Official 26/27 Purple &amp; Gold Jersey Today
-                        </h1>
-                        <p class="text-purple-100 text-sm md:text-base max-w-xl font-medium">
-                            Show your support for the pride of Kigezi. Premium home and away kits are now available for quick WhatsApp checkout.
-                        </p>
-                    </div>
-                    <div class="md:col-span-5 flex justify-end items-end h-full relative">
-                        <div class="w-full h-80 md:h-96 rounded-2xl bg-gradient-to-t from-clubPurple-dark/80 to-transparent flex items-end justify-center overflow-hidden border border-amber-400/20">
-                          <img src="{{ asset('images/so.jpeg') }}" alt="New Kits" class="w-full h-full object-cover object-top opacity-90" referrerpolicy="no-referrer">
-                            <div class="absolute bottom-6 right-6 bg-gray-950/80 backdrop-blur-md px-4 py-2 rounded-xl border border-amber-400 text-amber-400 text-xs font-bold flex items-center gap-2 shadow-lg">
-                                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span> energy
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Carousel Controls (Previous / Next Buttons & Indicators) -->
-            <div class="absolute bottom-4 left-6 md:left-12 flex items-center gap-4 z-20">
-                <!-- Indicators -->
-                <div class="flex items-center gap-2" id="carouselIndicators">
-                    <button type="button" class="w-3 h-3 rounded-full bg-amber-400 transition-all" data-slide="0"></button>
-                    <button type="button" class="w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" data-slide="1"></button>
-                    <button type="button" class="w-3 h-3 rounded-full bg-white/40 hover:bg-white transition-all" data-slide="2"></button>
-                </div>
-            </div>
-
-            <div class="absolute bottom-3 right-6 flex items-center gap-2 z-20">
-                <button id="prevSlideBtn" class="w-8 h-8 rounded-full bg-black/40 hover:bg-amber-400 hover:text-gray-950 text-white flex items-center justify-center transition-all border border-white/20">
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-                </button>
-                <button id="nextSlideBtn" class="w-8 h-8 rounded-full bg-black/40 hover:bg-amber-400 hover:text-gray-950 text-white flex items-center justify-center transition-all border border-white/20">
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- === MATCHES & LEAGUE TABLE SECTION === -->
-        <section id="matches" class="space-y-6 pt-4">
-            <div class="flex items-center justify-between">
-                <h2 class="text-2xl md:text-3xl font-black tracking-tight text-clubPurple flex items-center gap-2">
-                    <span class="w-3 h-8 bg-amber-500 rounded-full"></span> Matches &amp; Standings
-                </h2>
-                <a href="#fixtures" class="bg-clubBlue hover:bg-clubBlue-dark text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-md transition-all">
-                    All Fixtures <i class="fa-solid fa-arrow-right ml-1"></i>
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                
-                <!-- Left Sub-Grid: Last Result & Next Fixture -->
-                <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
-                    <!-- Last Result Card -->
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-md flex flex-col justify-between space-y-4">
-                        <div class="flex justify-between items-center text-xs text-gray-500 font-medium">
-                            <span class="text-clubPurple font-bold uppercase tracking-wider">Last Result</span>
-                            <span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded border border-amber-300 font-bold">FT</span>
-                        </div>
-                        <div class="flex items-center justify-between my-2">
-                            <div class="text-center flex-1">
-                                <div class="w-12 h-12 mx-auto bg-gradient-to-br from-clubPurple to-clubBlue rounded-full flex items-center font-black justify-center mb-1 text-white shadow">EFC</div>
-                                <span class="text-xs font-bold block text-gray-900">Embogo FC</span>
-                            </div>
-                            <div class="text-amber-700 font-black text-xl px-3 tracking-wider bg-gray-50 py-1.5 rounded-xl border border-gray-200 shadow-inner">2 - 1</div>
-                            <div class="text-center flex-1">
-                                <div class="w-12 h-12 mx-auto bg-gray-800 rounded-full flex items-center font-black justify-center mb-1 text-white shadow">VIP</div>
-                                <span class="text-xs font-bold block text-gray-900">Vipers SC</span>
-                            </div>
-                        </div>
-                        <div class="pt-3 border-t border-gray-100 text-center">
-                            <a href="#" class="text-xs text-clubPurple font-bold hover:underline">Match Details &amp; Stats <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i></a>
-                        </div>
-                    </div>
-
-                    <!-- Next Fixture Card -->
-                    <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-md flex flex-col justify-between space-y-4">
-                        <div class="flex justify-between items-center text-xs text-gray-500 font-medium">
-                            <span class="text-clubPurple font-bold uppercase tracking-wider">Next Fixture</span>
-                            <span class="bg-purple-100 text-clubPurple px-2 py-0.5 rounded border border-purple-200 font-bold">Upcoming</span>
-                        </div>
-                        <div class="flex items-center justify-between my-2">
-                            <div class="text-center flex-1">
-                                <div class="w-12 h-12 mx-auto bg-gradient-to-br from-clubPurple to-clubBlue rounded-full flex items-center font-black justify-center mb-1 text-white shadow">EFC</div>
-                                <span class="text-xs font-bold block text-gray-900">Embogo FC</span>
-                            </div>
-                            <div class="text-gray-400 font-black text-sm px-3 tracking-widest">VS</div>
-                            <div class="text-center flex-1">
-                                <div class="w-12 h-12 mx-auto bg-gray-800 rounded-full flex items-center font-black justify-center mb-1 text-white shadow">KCC</div>
-                                <span class="text-xs font-bold block text-gray-900">KCCA FC</span>
-                            </div>
-                        </div>
-                        <div class="pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
-                            <span><i class="fa-solid fa-location-dot mr-1 text-clubPurple"></i> Nakivubo</span>
-                            <span class="text-gray-900 font-semibold">Sat, 16:00</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Right Sub-Grid: League Table Mini Widget -->
-                <div id="standings" class="lg:col-span-5 bg-white border border-gray-200 rounded-2xl p-5 shadow-md">
-                    <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-                        <h3 class="text-sm font-black text-gray-900 uppercase tracking-wider">League Table</h3>
-                        <a href="#" class="text-xs text-clubPurple font-bold hover:underline">Full Table</a>
-                    </div>
-                    <div class="overflow-x-auto pt-2">
-                        <table class="w-full text-xs text-left">
-                            <thead>
-                                <tr class="text-gray-500 border-b border-gray-100">
-                                    <th class="py-2 px-1">#</th>
-                                    <th class="py-2 px-2">Team</th>
-                                    <th class="py-2 px-1 text-center">P</th>
-                                    <th class="py-2 px-1 text-center">W</th>
-                                    <th class="py-2 px-1 text-center">D</th>
-                                    <th class="py-2 px-1 text-center">L</th>
-                                    <th class="py-2 px-1 text-right">Pts</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 font-medium">
-                                <tr>
-                                    <td class="py-2 px-1 text-gray-500">10</td>
-                                    <td class="py-2 px-2 text-gray-900">Police FC</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-right font-bold text-gray-900">1</td>
-                                </tr>
-                                <tr class="bg-purple-50 border-l-2 border-clubPurple">
-                                    <td class="py-2 px-1 text-clubPurple font-bold">11</td>
-                                    <td class="py-2 px-2 font-bold text-clubPurple">Embogo FC</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-right font-bold text-clubPurple">1</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-2 px-1 text-gray-500">12</td>
-                                    <td class="py-2 px-2 text-gray-900">Kitara FC</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-center">1</td>
-                                    <td class="py-2 px-1 text-center">0</td>
-                                    <td class="py-2 px-1 text-right font-bold text-gray-900">1</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- === LATEST NEWS FEED SECTION === -->
-        <section id="news" class="space-y-6 pt-6">
-            <div class="flex items-center justify-between">
-                <h2 class="text-2xl md:text-3xl font-black tracking-tight text-clubPurple flex items-center gap-2">
-                    <span class="w-3 h-8 bg-amber-500 rounded-full"></span> Latest News
-                </h2>
-                <a href="#" class="text-xs text-clubPurple font-bold hover:underline">All News <i class="fa-solid fa-arrow-right ml-1"></i></a>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                @forelse(collect($posts ?? [])->take(3) as $post)
-                    <!-- Dynamic News Article Card -->
-                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between hover:shadow-lg transition-all">
-                        <div>
-                            <div class="h-48 overflow-hidden relative bg-gray-100 flex items-center justify-center">
-                                @php
-                                    $media = DB::table('post_media')->where('post_id', $post->id)->first();
-                                @endphp
-
-                                @if($media && !empty($media->file_path))
-                                    <img src="{{ asset($media->file_path) }}" alt="{{ $post->title }}" class="w-full h-full object-cover">
-                                @else
-                                    <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80" alt="Default News Image" class="w-full h-full object-cover">
-                                @endif
-
-                                <span class="absolute top-3 left-3 bg-gray-900/80 backdrop-blur text-amber-400 text-[10px] font-bold px-2.5 py-1 rounded-md border border-amber-400/30">
-                                    {{ $post->status ?? 'Published' }}
-                                </span>
-                            </div>
-                            <div class="p-5 space-y-2">
-                                <span class="text-[11px] text-gray-500"><i class="fa-regular fa-calendar mr-1"></i> {{ \Carbon\Carbon::parse($post->created_at)->format('F j, Y') }}</span>
-                                <h3 class="font-black text-gray-900 text-base hover:text-clubPurple transition-colors line-clamp-2">{{ $post->title }}</h3>
-                                <p class="text-xs text-gray-600 line-clamp-3">{{ $post->content }}</p>
-                            </div>
-                        </div>
-                        <div class="p-5 pt-0">
-                            <a href="#" class="text-xs font-bold text-clubPurple hover:underline flex items-center gap-1">Read Full Article <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-span-3 text-center py-10 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-                        <p class="text-sm text-gray-500 font-medium">No news articles found at the moment. Check back later!</p>
-                    </div>
-                @endforelse
-
-            </div>
-        </section>
-
-        <!-- === NEW KITS PROMO BANNER === -->
-        <section id="kits" class="pt-6">
-            <div class="bg-gradient-to-r from-clubPurple-dark via-clubPurple to-clubBlue rounded-3xl overflow-hidden shadow-xl px-6 md:px-12 py-10 relative border border-amber-500/30">
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-                    
-                    <!-- Left: Text & WhatsApp Checkout Button -->
-                    <div class="md:col-span-6 space-y-4 z-10 text-white">
-                        <span class="text-xs font-black tracking-widest uppercase bg-amber-400 text-gray-950 px-3.5 py-1 rounded-full shadow">
-                            Official Merchandise
-                        </span>
-                        <h2 class="text-3xl md:text-4xl font-black tracking-tight drop-shadow">
-                            NEW KITS
-                        </h2>
-                        <p class="text-purple-100 text-sm md:text-base font-medium max-w-md">
-                            Official jerseys and match kits for the 26/27 season. Get yours now and support The Buffaloes in style!
-                        </p>
-                        <div>
-                            <a href="https://wa.me/" target="_blank" class="inline-flex items-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-sm px-6 py-3 rounded-full shadow-lg border border-white/20 transition-all hover:scale-105">
-                                <i class="fa-brands fa-whatsapp text-lg text-gray-950"></i> Buy Now
+                            <a
+                                href="{{ route('fixtures') }}"
+                                class="focus-ring inline-flex items-center justify-center gap-3 rounded-xl bg-clubGold-light px-7 py-4 font-bold text-clubPurple-dark shadow-lg transition hover:bg-white"
+                            >
+                                <i data-lucide="circle-play" aria-hidden="true"></i>
+                                Match Centre
+                                <i data-lucide="arrow-right" class="icon-small" aria-hidden="true"></i>
                             </a>
-                        </div>
-                    </div>
 
-                    <!-- Right: Kit Jerseys Graphic Showcase -->
-                    <div class="md:col-span-6 flex justify-center md:justify-end relative">
-                        <div class="flex items-end gap-2 md:gap-4 -mb-10 md:-mb-12">
-                            <div class="w-24 md:w-32 bg-purple-950/60 backdrop-blur rounded-t-2xl p-2 border-t border-purple-400/40 shadow-2xl">
-                                <img src="{{ asset('images/img1.svg') }}" alt="Home Kit" class="w-full h-32 md:h-44 object-cover rounded-xl opacity-90">
-                                <span class="block text-center text-[10px] font-bold text-white mt-1">Home Kit</span>
-                            </div>
-                            <div class="w-28 md:w-36 bg-amber-600/60 backdrop-blur rounded-t-2xl p-2 border-t border-amber-300 shadow-2xl -translate-y-4">
-                                <img src="{{ asset('images/img2.svg') }}" alt="Away Kit" class="w-full h-36 md:h-52 object-cover rounded-xl opacity-90">
-                                <span class="block text-center text-[10px] font-bold text-amber-200 mt-1">Away Kit</span>
-                            </div>
-                            <div class="w-24 md:w-32 bg-slate-800/60 backdrop-blur rounded-t-2xl p-2 border-t border-slate-400/40 shadow-2xl">
-                                <img src="{{ asset('images/img3.svg') }}" alt="Third Kit" class="w-full h-32 md:h-44 object-cover rounded-xl opacity-90">
-                                <span class="block text-center text-[10px] font-bold text-white mt-1">Third Kit</span>
-                            </div>
+                            <a
+                                href="{{ route('news') }}"
+                                class="focus-ring inline-flex items-center justify-center gap-3 rounded-xl border border-white/30 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur-md transition hover:bg-white hover:text-clubPurple-dark"
+                            >
+                                <i data-lucide="newspaper" aria-hidden="true"></i>
+                                Latest News
+                            </a>
+
                         </div>
+
+                        <!-- Hero Stats -->
+                        <div class="mt-12 grid max-w-xl grid-cols-3 gap-3 sm:gap-5">
+
+                            <div class="glass rounded-2xl p-4">
+                                <div class="text-2xl font-black sm:text-3xl">
+                                    FC
+                                </div>
+                                <div class="mt-1 text-xs font-semibold uppercase tracking-wider text-white/60">
+                                    Our Identity
+                                </div>
+                            </div>
+
+                            <div class="glass rounded-2xl p-4">
+                                <div class="text-2xl font-black sm:text-3xl">
+                                    01
+                                </div>
+                                <div class="mt-1 text-xs font-semibold uppercase tracking-wider text-white/60">
+                                    Club
+                                </div>
+                            </div>
+
+                            <div class="glass rounded-2xl p-4">
+                                <div class="text-2xl font-black sm:text-3xl">
+                                    100%
+                                </div>
+                                <div class="mt-1 text-xs font-semibold uppercase tracking-wider text-white/60">
+                                    Passion
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </div>
+
             </div>
+
+
+            <!-- Slide 2 -->
+            <div
+                class="hero-slide relative min-h-[680px]"
+                data-slide="1"
+            >
+
+                <img
+                    src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=2200&q=85"
+                    alt="Football players competing on a football pitch"
+                    class="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    decoding="async"
+                >
+
+                <div class="hero-gradient absolute inset-0"></div>
+
+                <div class="relative mx-auto flex min-h-[680px] max-w-7xl items-center px-5 py-20 sm:px-8 lg:px-10">
+
+                    <div class="max-w-3xl text-white">
+
+                        <div class="mb-6 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur-md">
+
+                            <span class="flex h-8 w-8 items-center justify-center rounded-full bg-clubGold-light text-clubPurple-dark shadow-sm">
+                                <i data-lucide="trophy" class="icon-small" aria-hidden="true"></i>
+                            </span>
+
+                            <span class="uppercase tracking-[.16em]">
+                                One Club. One Ambition.
+                            </span>
+
+                        </div>
+
+                        <h2 class="text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-8xl">
+                            Chase The
+                            <span class="block text-clubGold-light">
+                                Glory.
+                            </span>
+                        </h2>
+
+                        <p class="mt-7 max-w-2xl text-lg leading-8 text-white/85 sm:text-xl">
+                            Every training session, every match and every supporter
+                            contributes to the journey. Stand with Embogo FC.
+                        </p>
+
+                        <div class="mt-9 flex flex-col gap-4 sm:flex-row">
+
+                            <a
+                                href="{{ route('club') }}"
+                                class="focus-ring inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-4 font-bold text-clubPurple-dark transition hover:bg-clubGold-light"
+                            >
+                                <i data-lucide="shield" aria-hidden="true"></i>
+                                Discover The Club
+                            </a>
+
+                            <a
+                                href="{{ route('kits') }}"
+                                class="focus-ring inline-flex items-center justify-center gap-3 rounded-xl border border-white/30 bg-white/10 px-7 py-4 font-bold text-white backdrop-blur-md transition hover:bg-white hover:text-clubPurple-dark"
+                            >
+                                <i data-lucide="shirt" aria-hidden="true"></i>
+                                Club Kits
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Carousel Controls -->
+            <div class="absolute bottom-9 left-1/2 z-20 flex -translate-x-1/2 items-center gap-3">
+
+                <button
+                    type="button"
+                    id="prevSlide"
+                    aria-label="Previous slide"
+                    class="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-md transition hover:bg-white hover:text-clubPurple-dark"
+                >
+                    <i data-lucide="chevron-left" aria-hidden="true"></i>
+                </button>
+
+                <div
+                    id="carouselDots"
+                    class="flex items-center gap-2"
+                    aria-label="Hero slides"
+                >
+                    <button
+                        type="button"
+                        class="carousel-dot active h-2 w-7 rounded-full bg-clubGold-light"
+                        data-slide-to="0"
+                        aria-label="Go to slide 1"
+                    ></button>
+
+                    <button
+                        type="button"
+                        class="carousel-dot h-2 w-7 rounded-full bg-white/40"
+                        data-slide-to="1"
+                        aria-label="Go to slide 2"
+                    ></button>
+                </div>
+
+                <button
+                    type="button"
+                    id="nextSlide"
+                    aria-label="Next slide"
+                    class="focus-ring flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-md transition hover:bg-white hover:text-clubPurple-dark"
+                >
+                    <i data-lucide="chevron-right" aria-hidden="true"></i>
+                </button>
+
+            </div>
+
         </section>
 
+
+        <!-- =========================================================
+             QUICK ACCESS
+        ========================================================== -->
+
+        <section class="relative z-20 -mt-8 px-5 sm:px-8 lg:px-10">
+
+            <div class="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-4">
+
+                <a
+                    href="{{ route('fixtures') }}"
+                    class="quick-card focus-ring rounded-2xl border border-slate-200 bg-white p-5 shadow-club hover:border-clubPurple-light"
+                >
+                    <div class="icon-box mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-clubPurple">
+                        <i data-lucide="calendar-days" aria-hidden="true"></i>
+                    </div>
+
+                    <h3 class="font-extrabold text-slate-900">
+                        Fixtures
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Follow match updates
+                    </p>
+                </a>
+
+
+                <a
+                    href="{{ route('league') }}"
+                    class="quick-card focus-ring rounded-2xl border border-slate-200 bg-white p-5 shadow-club hover:border-clubBlue"
+                >
+                    <div class="icon-box mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-clubBlue">
+                        <i data-lucide="bar-chart-3" aria-hidden="true"></i>
+                    </div>
+
+                    <h3 class="font-extrabold text-slate-900">
+                        Standings
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Check league position
+                    </p>
+                </a>
+
+
+                <a
+                    href="{{ route('news') }}"
+                    class="quick-card focus-ring rounded-2xl border border-slate-200 bg-white p-5 shadow-club hover:border-clubGold"
+                >
+                    <div class="icon-box mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 text-clubGold">
+                        <i data-lucide="newspaper" aria-hidden="true"></i>
+                    </div>
+
+                    <h3 class="font-extrabold text-slate-900">
+                        Club News
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Latest Embogo updates
+                    </p>
+                </a>
+
+
+                <a
+                    href="{{ route('kits') }}"
+                    class="quick-card focus-ring rounded-2xl border border-slate-200 bg-white p-5 shadow-club hover:border-green-500"
+                >
+                    <div class="icon-box mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-700">
+                        <i data-lucide="shirt" aria-hidden="true"></i>
+                    </div>
+
+                    <h3 class="font-extrabold text-slate-900">
+                        Club Kits
+                    </h3>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Represent the club
+                    </p>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             MATCH CENTRE
+        ========================================================== -->
+
+        <section
+            id="matches"
+            class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10"
+        >
+
+            <div class="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+
+                <div>
+
+                    <div class="mb-4 flex items-center gap-3 text-sm font-bold uppercase text-clubPurple section-kicker">
+                        <span class="h-px w-10 bg-clubGold-light"></span>
+                        Match Centre
+                    </div>
+
+                    <h2 class="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+                        The Game
+                        <span class="text-clubPurple">
+                            Starts Here.
+                        </span>
+                    </h2>
+
+                    <p class="mt-4 max-w-2xl text-slate-500">
+                        Stay connected with Embogo FC fixtures, match visuals
+                        and league information.
+                    </p>
+
+                </div>
+
+                <div class="inline-flex items-center gap-2 self-start rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-green-700 md:self-auto">
+                    <span class="h-2 w-2 animate-pulse rounded-full bg-green-500"></span>
+                    Club Updates
+                </div>
+
+            </div>
+
+
+            @php
+                $dbFixtures = collect();
+
+                if (\Illuminate\Support\Facades\Schema::hasTable('fixture_photos')) {
+                    $dbFixtures = DB::table('fixture_photos')
+                        ->latest('id')
+                        ->take(2)
+                        ->get();
+                }
+
+                $leagueTable = null;
+
+                if (\Illuminate\Support\Facades\Schema::hasTable('league_table_media')) {
+                    $leagueTable = DB::table('league_table_media')
+                        ->latest('id')
+                        ->first();
+                }
+            @endphp
+
+
+            <div class="grid gap-8 lg:grid-cols-3">
+
+                <!-- Fixtures -->
+                <div class="lg:col-span-2">
+
+                    <div class="mb-5 flex items-center justify-between">
+
+                        <h3 class="flex items-center gap-3 text-xl font-black">
+                            <span class="icon-box flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-clubPurple">
+                                <i data-lucide="circle-dot" aria-hidden="true"></i>
+                            </span>
+                            Latest Fixtures
+                        </h3>
+
+                        <a href="{{ route('fixtures') }}" class="text-sm font-bold text-clubPurple hover:underline">
+                            View All Fixtures &rarr;
+                        </a>
+
+                    </div>
+
+
+                    @if($dbFixtures->count())
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+
+                            @foreach($dbFixtures as $fixture)
+
+                                <article class="match-card overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm hover:border-clubPurple-light hover:shadow-club">
+
+                                    <div class="relative aspect-[16/10] overflow-hidden bg-slate-100">
+
+                                        <img
+                                            src="{{ asset($fixture->file_path) }}"
+                                            alt="Embogo FC fixture"
+                                            class="h-full w-full object-cover transition duration-500 hover:scale-105"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+
+                                        <div class="absolute left-4 top-4">
+
+                                            <span class="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-black text-clubPurple shadow">
+
+                                                <i
+                                                    data-lucide="calendar-check"
+                                                    class="icon-small"
+                                                    aria-hidden="true"
+                                                ></i>
+
+                                                FIXTURE
+
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="p-6">
+
+                                        <div class="flex items-center justify-between gap-4">
+
+                                            <div>
+                                                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                                    Match Information
+                                                </p>
+
+                                                <h4 class="mt-2 text-lg font-black text-slate-900">
+                                                    Embogo FC
+                                                </h4>
+                                            </div>
+
+                                            <div class="icon-box flex h-12 w-12 items-center justify-center rounded-full bg-purple-50 text-clubPurple">
+                                                <i data-lucide="shield" aria-hidden="true"></i>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="mt-5 h-1 rounded-full purple-line"></div>
+
+                                        <p class="mt-4 text-sm leading-6 text-slate-500">
+                                            Check the latest fixture information
+                                            and follow the club's upcoming action.
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            @endforeach
+
+                        </div>
+
+                    @else
+
+                        <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center">
+
+                            <div class="icon-box mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 text-clubPurple">
+                                <i data-lucide="calendar-x-2" class="icon-large" aria-hidden="true"></i>
+                            </div>
+
+                            <h3 class="mt-5 text-xl font-black">
+                                No Fixtures Available
+                            </h3>
+
+                            <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                                Fixture information will appear here once it has
+                                been published by the club.
+                            </p>
+
+                        </div>
+
+                    @endif
+
+                </div>
+
+
+                <!-- League Table -->
+                <div id="standings">
+
+                    <div class="mb-5 flex items-center justify-between">
+
+                        <h3 class="flex items-center gap-3 text-xl font-black">
+                            <span class="icon-box flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-clubBlue">
+                                <i data-lucide="list-ordered" aria-hidden="true"></i>
+                            </span>
+                            League Table
+                        </h3>
+
+                        <a href="{{ route('league') }}" class="text-sm font-bold text-clubBlue hover:underline">
+                            Full Table &rarr;
+                        </a>
+
+                    </div>
+
+
+                    <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+                        @if($leagueTable)
+
+                            <div class="relative overflow-hidden">
+
+                                <img
+                                    src="{{ asset($leagueTable->file_path) }}"
+                                    alt="Latest league table"
+                                    class="w-full object-contain"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+
+                            </div>
+
+                            <div class="border-t border-slate-100 p-5">
+
+                                <div class="flex items-center gap-3 text-sm font-semibold text-slate-600">
+
+                                    <span class="icon-box flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-clubBlue">
+                                        <i data-lucide="trending-up" class="icon-small" aria-hidden="true"></i>
+                                    </span>
+
+                                    Latest published league information
+
+                                </div>
+
+                            </div>
+
+                        @else
+
+                            <div class="p-10 text-center">
+
+                                <div class="icon-box mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-clubBlue">
+                                    <i data-lucide="list-ordered" class="icon-large" aria-hidden="true"></i>
+                                </div>
+
+                                <h3 class="mt-5 text-xl font-black">
+                                    Standings Coming Soon
+                                </h3>
+
+                                <p class="mt-2 text-sm leading-6 text-slate-500">
+                                    The latest league table will appear here
+                                    once published.
+                                </p>
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             NEWS
+        ========================================================== -->
+
+        <section
+            id="news"
+            class="bg-white py-24"
+        >
+
+            <div class="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+
+                <div class="mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+
+                    <div>
+
+                        <div class="mb-4 flex items-center gap-3 text-sm font-bold uppercase text-clubBlue section-kicker">
+                            <span class="h-px w-10 bg-clubGold-light"></span>
+                            From The Club
+                        </div>
+
+                        <h2 class="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+                            Latest
+                            <span class="text-clubPurple">
+                                News.
+                            </span>
+                        </h2>
+
+                        <p class="mt-4 max-w-2xl text-slate-500">
+                            News, announcements and stories from around Embogo FC.
+                        </p>
+
+                    </div>
+
+                    <a
+                        href="{{ route('news') }}"
+                        class="focus-ring inline-flex items-center gap-2 self-start rounded-xl border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 transition hover:border-clubPurple hover:text-clubPurple"
+                    >
+                        View All News
+                        <i data-lucide="arrow-right" class="icon-small" aria-hidden="true"></i>
+                    </a>
+
+                </div>
+
+
+                @php
+                    $dbPosts = collect();
+                    $postMedia = collect();
+
+                    $hasNewsTable = \Illuminate\Support\Facades\Schema::hasTable('news_posts');
+                    $hasPostMediaTable = \Illuminate\Support\Facades\Schema::hasTable('post_media');
+
+                    if ($hasNewsTable) {
+                        $dbPosts = DB::table('news_posts')
+                            ->where('status', 'Published')
+                            ->latest('created_at')
+                            ->take(3)
+                            ->get();
+
+                        if ($hasPostMediaTable && $dbPosts->count()) {
+                            $postIds = $dbPosts->pluck('id');
+
+                            $postMedia = DB::table('post_media')
+                                ->whereIn('post_id', $postIds)
+                                ->get()
+                                ->keyBy('post_id');
+                        }
+                    }
+                @endphp
+
+
+                @if($dbPosts->count())
+
+                    <div class="grid gap-7 md:grid-cols-2 lg:grid-cols-3">
+
+                        @foreach($dbPosts as $post)
+
+                            @php
+                                $media = $postMedia->get($post->id);
+                                $image = $media && !empty($media->file_path)
+                                    ? asset($media->file_path)
+                                    : asset('images/bb.jpeg');
+                            @endphp
+
+                            <article class="news-card group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm hover:border-purple-200 hover:shadow-club">
+
+                                <!-- Image -->
+                                <div class="relative aspect-[16/10] overflow-hidden bg-slate-100">
+
+                                    <img
+                                        src="{{ $image }}"
+                                        alt="{{ $post->title }}"
+                                        class="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                                        loading="lazy"
+                                        decoding="async"
+                                    >
+
+                                    <div class="image-overlay absolute inset-0"></div>
+
+                                    <!-- Status -->
+                                    <div class="absolute left-5 top-5">
+
+                                        <span class="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-xs font-black text-clubPurple shadow">
+
+                                            <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+
+                                            {{ $post->status }}
+
+                                        </span>
+
+                                    </div>
+
+                                    <!-- Date -->
+                                    <div class="absolute bottom-5 left-5 text-white">
+
+                                        <div class="flex items-center gap-2 text-xs font-semibold text-white/80">
+
+                                            <i
+                                                data-lucide="calendar"
+                                                class="icon-small"
+                                                aria-hidden="true"
+                                            ></i>
+
+                                            {{ \Carbon\Carbon::parse($post->created_at)->format('d M Y') }}
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Content -->
+                                <div class="p-6">
+
+                                    <div class="flex items-center gap-4 text-xs font-semibold text-slate-400">
+
+                                        <span class="inline-flex items-center gap-1.5">
+                                            <i
+                                                data-lucide="clock-3"
+                                                class="icon-small"
+                                                aria-hidden="true"
+                                            ></i>
+                                            Club Update
+                                        </span>
+
+                                        @if(!empty($post->author))
+
+                                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+
+                                            <span class="inline-flex items-center gap-1.5">
+                                                <i
+                                                    data-lucide="user-round"
+                                                    class="icon-small"
+                                                    aria-hidden="true"
+                                                ></i>
+                                                {{ $post->author }}
+                                            </span>
+
+                                        @endif
+
+                                    </div>
+
+
+                                    <h3 class="mt-4 text-xl font-black leading-tight text-slate-900 transition group-hover:text-clubPurple">
+
+                                        {{ $post->title }}
+
+                                    </h3>
+
+
+                                    <p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-500">
+
+                                        {{ \Illuminate\Support\Str::limit(strip_tags($post->content), 145) }}
+
+                                    </p>
+
+
+                                    <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+
+                                        <a href="{{ route('news') }}" class="text-sm font-extrabold text-clubPurple hover:underline">
+                                            Read Story
+                                        </a>
+
+                                        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-purple-50 text-clubPurple transition group-hover:bg-clubPurple group-hover:text-white">
+
+                                            <i
+                                                data-lucide="arrow-up-right"
+                                                class="icon-small"
+                                                aria-hidden="true"
+                                            ></i>
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+                        @endforeach
+
+                    </div>
+
+                @else
+
+                    <div class="rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center">
+
+                        <div class="icon-box mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 text-clubPurple">
+                            <i data-lucide="newspaper" class="icon-large" aria-hidden="true"></i>
+                        </div>
+
+                        <h3 class="mt-5 text-xl font-black">
+                            No News Yet
+                        </h3>
+
+                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                            New Embogo FC stories and announcements will appear
+                            here when they are published.
+                        </p>
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             CLUB VALUES
+        ========================================================== -->
+
+        <section
+            id="about"
+            class="relative overflow-hidden bg-slate-50 py-24"
+        >
+
+            <!-- Decorative elements -->
+            <div class="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-purple-100 blur-3xl"></div>
+            <div class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-blue-100 blur-3xl"></div>
+
+
+            <div class="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+
+                <div class="grid items-center gap-14 lg:grid-cols-2">
+
+                    <!-- Text -->
+                    <div>
+
+                        <div class="mb-4 flex items-center gap-3 text-sm font-bold uppercase text-clubPurple section-kicker">
+                            <span class="h-px w-10 bg-clubGold-light"></span>
+                            Our Identity
+                        </div>
+
+                        <h2 class="text-4xl font-black leading-tight tracking-tight text-slate-950 sm:text-5xl">
+
+                            Built On
+                            <span class="text-clubPurple">
+                                Passion.
+                            </span>
+
+                            <br>
+
+                            Driven By
+                            <span class="text-clubBlue">
+                                Purpose.
+                            </span>
+
+                        </h2>
+
+                        <p class="mt-6 max-w-xl text-base leading-8 text-slate-600">
+                            Embogo FC is more than a football team. It is a community
+                            built around ambition, discipline, teamwork and the love
+                            of the beautiful game.
+                        </p>
+
+
+                        <div class="mt-8 flex flex-wrap gap-3">
+
+                            <a href="{{ route('club') }}" class="inline-flex items-center gap-2 rounded-full bg-purple-100 px-4 py-2 text-sm font-bold text-clubPurple hover:bg-purple-200 transition">
+                                <i data-lucide="users-round" class="icon-small" aria-hidden="true"></i>
+                                Community Profile
+                            </a>
+
+                            <a href="{{ route('club') }}" class="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-2 text-sm font-bold text-clubBlue hover:bg-blue-200 transition">
+                                <i data-lucide="handshake" class="icon-small" aria-hidden="true"></i>
+                                The Club
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Values -->
+                    <div class="grid gap-5 sm:grid-cols-2">
+
+                        <div class="value-card rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
+                            <div class="icon-box flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-clubPurple">
+                                <i data-lucide="shield-check" class="icon-large" aria-hidden="true"></i>
+                            </div>
+
+                            <h3 class="mt-6 text-xl font-black">
+                                Discipline
+                            </h3>
+
+                            <p class="mt-3 text-sm leading-6 text-slate-500">
+                                We believe consistency and discipline create
+                                the foundation for success.
+                            </p>
+
+                        </div>
+
+
+                        <div class="value-card rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:translate-y-7">
+
+                            <div class="icon-box flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-clubBlue">
+                                <i data-lucide="users-round" class="icon-large" aria-hidden="true"></i>
+                            </div>
+
+                            <h3 class="mt-6 text-xl font-black">
+                                Teamwork
+                            </h3>
+
+                            <p class="mt-3 text-sm leading-6 text-slate-500">
+                                Football is a team game. We grow and compete
+                                together.
+                            </p>
+
+                        </div>
+
+
+                        <div class="value-card rounded-3xl border border-slate-200 bg-white p-7 shadow-sm">
+
+                            <div class="icon-box flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-clubGold">
+                                <i data-lucide="flame" class="icon-large" aria-hidden="true"></i>
+                            </div>
+
+                            <h3 class="mt-6 text-xl font-black">
+                                Passion
+                            </h3>
+
+                            <p class="mt-3 text-sm leading-6 text-slate-500">
+                                Every match is played with energy, pride
+                                and commitment.
+                            </p>
+
+                        </div>
+
+
+                        <div class="value-card rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:translate-y-7">
+
+                            <div class="icon-box flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-700">
+                                <i data-lucide="trending-up" class="icon-large" aria-hidden="true"></i>
+                            </div>
+
+                            <h3 class="mt-6 text-xl font-black">
+                                Growth
+                            </h3>
+
+                            <p class="mt-3 text-sm leading-6 text-slate-500">
+                                We continuously develop our players, team
+                                and wider football community.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             KIT PROMO
+        ========================================================== -->
+
+        <section
+            id="kits"
+            class="relative overflow-hidden bg-clubPurple-dark py-20"
+        >
+
+            <div class="absolute inset-0 opacity-20">
+
+                <div class="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-clubGold-light blur-3xl"></div>
+
+                <div class="absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-clubBlue-light blur-3xl"></div>
+
+            </div>
+
+
+            <div class="relative mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+
+                <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-md sm:p-12">
+
+                    <div class="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+
+                        <div class="max-w-3xl text-white">
+
+                            <div class="mb-5 inline-flex items-center gap-2 rounded-full bg-clubGold-light px-4 py-2 text-xs font-black uppercase tracking-wider text-clubPurple-dark">
+
+                                <i data-lucide="shirt" class="icon-small" aria-hidden="true"></i>
+
+                                Club Merchandise
+
+                            </div>
+
+                            <h2 class="text-4xl font-black tracking-tight sm:text-5xl">
+
+                                Wear The
+                                <span class="text-clubGold-light">
+                                    Embogo Colours.
+                                </span>
+
+                            </h2>
+
+                            <p class="mt-5 max-w-2xl text-base leading-7 text-white/70 sm:text-lg">
+                                Represent the club wherever you go. Get information
+                                about the latest Embogo FC kits and merchandise.
+                            </p>
+
+                        </div>
+
+
+                        <a
+                            href="{{ route('kits') }}"
+                            class="focus-ring inline-flex items-center justify-center gap-3 rounded-xl bg-clubGold-light px-7 py-4 font-black text-clubPurple-dark shadow-xl transition hover:bg-white"
+                        >
+
+                            <i data-lucide="shopping-bag" aria-hidden="true"></i>
+
+                            Get Your Kit
+
+                            <i data-lucide="arrow-right" class="icon-small" aria-hidden="true"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+         
     </main>
 
-    <!-- Interactive Scripts for Mobile Menu & Sliding Hero Carousel -->
+
+    <!-- =========================================================
+         FOOTER INCLUSION
+    ========================================================== -->
+ 
+
+
+    <!-- =========================================================
+         LUCIDE ICON INITIALIZATION
+    ========================================================== -->
+
     <script>
-        // Mobile Menu Toggle
-        const menuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
+        document.addEventListener('DOMContentLoaded', function () {
 
-        if (menuBtn && mobileMenu) {
-            menuBtn.addEventListener('click', () => {
-                mobileMenu.classList.toggle('hidden');
-            });
-        }
-
-        // Hero Carousel Logic
-        const slides = document.querySelectorAll('.carousel-slide');
-        const indicators = document.querySelectorAll('#carouselIndicators button');
-        const prevBtn = document.getElementById('prevSlideBtn');
-        const nextBtn = document.getElementById('nextSlideBtn');
-        let currentSlide = 0;
-        let slideInterval;
-
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                if (i === index) {
-                    slide.classList.remove('hidden');
-                } else {
-                    slide.classList.add('hidden');
-                }
-            });
-
-            indicators.forEach((ind, i) => {
-                if (i === index) {
-                    ind.classList.remove('bg-white/40');
-                    ind.classList.add('bg-amber-400', 'w-6');
-                } else {
-                    ind.classList.remove('bg-amber-400', 'w-6');
-                    ind.classList.add('bg-white/40', 'w-3');
-                }
-            });
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            let next = (currentSlide + 1) % slides.length;
-            showSlide(next);
-        }
-
-        function prevSlide() {
-            let prev = (currentSlide - 1 + slides.length) % slides.length;
-            showSlide(prev);
-        }
-
-        if (nextBtn && prevBtn && slides.length > 0) {
-            nextBtn.addEventListener('click', () => {
-                nextSlide();
-                resetInterval();
-            });
-
-            prevBtn.addEventListener('click', () => {
-                prevSlide();
-                resetInterval();
-            });
-
-            indicators.forEach((ind, i) => {
-                ind.addEventListener('click', () => {
-                    showSlide(i);
-                    resetInterval();
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons({
+                    attrs: {
+                        'stroke-width': 1.8
+                    }
                 });
+            }
+
+        });
+    </script>
+
+
+    <!-- =========================================================
+         CAROUSEL JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.carousel-dot');
+            const previousButton = document.getElementById('prevSlide');
+            const nextButton = document.getElementById('nextSlide');
+
+            let currentSlide = 0;
+            let autoplay;
+
+            if (!slides.length) {
+                return;
+            }
+
+            function showSlide(index) {
+
+                if (index >= slides.length) {
+                    currentSlide = 0;
+                } else if (index < 0) {
+                    currentSlide = slides.length - 1;
+                } else {
+                    currentSlide = index;
+                }
+
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle(
+                        'active',
+                        i === currentSlide
+                    );
+                });
+
+                dots.forEach((dot, i) => {
+
+                    dot.classList.toggle(
+                        'active',
+                        i === currentSlide
+                    );
+
+                    if (i === currentSlide) {
+                        dot.classList.remove('bg-white/40');
+                        dot.classList.add('bg-clubGold-light');
+                    } else {
+                        dot.classList.remove('bg-clubGold-light');
+                        dot.classList.add('bg-white/40');
+                    }
+
+                });
+            }
+
+
+            function nextSlide() {
+                showSlide(currentSlide + 1);
+            }
+
+
+            function previousSlide() {
+                showSlide(currentSlide - 1);
+            }
+
+
+            function startAutoplay() {
+
+                stopAutoplay();
+
+                autoplay = setInterval(() => {
+                    nextSlide();
+                }, 6000);
+
+            }
+
+
+            function stopAutoplay() {
+
+                if (autoplay) {
+                    clearInterval(autoplay);
+                }
+
+            }
+
+
+            if (nextButton) {
+
+                nextButton.addEventListener('click', function () {
+                    nextSlide();
+                    startAutoplay();
+                });
+
+            }
+
+
+            if (previousButton) {
+
+                previousButton.addEventListener('click', function () {
+                    previousSlide();
+                    startAutoplay();
+                });
+
+            }
+
+
+            dots.forEach((dot, index) => {
+
+                dot.addEventListener('click', function () {
+                    showSlide(index);
+                    startAutoplay();
+                });
+
             });
 
-            function startInterval() {
-                slideInterval = setInterval(nextSlide, 4000);
+
+            const hero = document.querySelector('#home');
+
+            if (hero) {
+
+                hero.addEventListener('mouseenter', stopAutoplay);
+
+                hero.addEventListener('mouseleave', startAutoplay);
+
+                hero.addEventListener('focusin', stopAutoplay);
+
+                hero.addEventListener('focusout', stopAutoplay);
+
             }
 
-            function resetInterval() {
-                clearInterval(slideInterval);
-                startInterval();
-            }
 
-            startInterval();
-        }
+            /*
+             * Keyboard support
+             */
+            document.addEventListener('keydown', function (event) {
+
+                if (event.key === 'ArrowLeft') {
+                    previousSlide();
+                    startAutoplay();
+                }
+
+                if (event.key === 'ArrowRight') {
+                    nextSlide();
+                    startAutoplay();
+                }
+
+            });
+
+
+            showSlide(0);
+            startAutoplay();
+
+        });
     </script>
-     
-@include('layouts.footer')
+
+     @include('layouts.footer')
 
 </body>
+
 </html>
